@@ -1,6 +1,6 @@
 {
   "name": "gm-gc",
-  "version": "2.0.74",
+  "version": "2.0.75",
   "description": "State machine agent with hooks, skills, and automated git enforcement",
   "author": "AnEntrypoint",
   "license": "MIT",
@@ -38,5 +38,12 @@
     ".gitignore",
     ".editorconfig",
     "CONTRIBUTING.md"
-  ]
+  ],
+  "dependencies": {
+    "mcp-thorns": "latest",
+    "codebasesearch": "latest"
+  },
+  "scripts": {
+    "postinstall": "node scripts/postinstall.js"
+  }
 }
