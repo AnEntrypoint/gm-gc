@@ -13,6 +13,18 @@
         ]
       }
     ],
+    "AfterTool": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node ${extensionPath}/hooks/post-tool-use-hook.js",
+            "timeout": 30000
+          }
+        ]
+      }
+    ],
     "BeforeAgent": [
       {
         "matcher": "*",
