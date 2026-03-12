@@ -16,14 +16,7 @@ console.log(isUpgrade ? 'Upgrading gm-gc...' : 'Installing gm-gc...');
 try {
   fs.mkdirSync(destDir, { recursive: true });
 
-  const filesToCopy = [
-    ['agents', 'agents'],
-    ['hooks', 'hooks'],
-    ['.mcp.json', '.mcp.json'],
-    ['gemini-extension.json', 'gemini-extension.json'],
-    ['README.md', 'README.md'],
-    ['GEMINI.md', 'GEMINI.md']
-  ];
+  const filesToCopy = [["agents","agents"],["hooks","hooks"],[".mcp.json",".mcp.json"],["gemini-extension.json","gemini-extension.json"],["README.md","README.md"],["GEMINI.md","GEMINI.md"]];
 
   function copyRecursive(src, dst) {
     if (!fs.existsSync(src)) return;
@@ -37,9 +30,14 @@ try {
 
   filesToCopy.forEach(([src, dst]) => copyRecursive(path.join(srcDir, src), path.join(destDir, dst)));
 
-  const destPath = process.platform === 'win32'
-    ? destDir.replace(/\\/g, '/')
-    : destDir;
+  const { execSync } = require('child_process');
+  try {
+    execSync('bunx skills add AnEntrypoint/plugforge --full-depth --all --global --yes', { stdio: 'inherit' });
+  } catch (e) {
+    console.warn('Warning: skills install failed (non-fatal):', e.message);
+  }
+
+  const destPath = process.platform === 'win32' ? destDir.replace(/\\/g, '/') : destDir;
   console.log(`✓ gm-gc ${isUpgrade ? 'upgraded' : 'installed'} to ${destPath}`);
   console.log('Restart Gemini CLI to activate.');
 } catch (e) {

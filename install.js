@@ -7,64 +7,34 @@ function isInsideNodeModules() {
 }
 
 function getProjectRoot() {
-  if (!isInsideNodeModules()) {
-    return null;
-  }
-
+  if (!isInsideNodeModules()) return null;
   let current = __dirname;
   while (current !== path.dirname(current)) {
     current = path.dirname(current);
-    const parent = path.dirname(current);
-    if (path.basename(current) === 'node_modules') {
-      return parent;
-    }
+    if (path.basename(current) === 'node_modules') return path.dirname(current);
   }
   return null;
 }
 
 function safeCopyDirectory(src, dst) {
   try {
-    if (!fs.existsSync(src)) {
-      return false;
-    }
-
+    if (!fs.existsSync(src)) return false;
     fs.mkdirSync(dst, { recursive: true });
-    const entries = fs.readdirSync(src, { withFileTypes: true });
-
-    entries.forEach(entry => {
-      const srcPath = path.join(src, entry.name);
-      const dstPath = path.join(dst, entry.name);
-
-      if (entry.isDirectory()) {
-        safeCopyDirectory(srcPath, dstPath);
-      } else if (entry.isFile()) {
-        const content = fs.readFileSync(srcPath, 'utf-8');
-        const dstDir = path.dirname(dstPath);
-        if (!fs.existsSync(dstDir)) {
-          fs.mkdirSync(dstDir, { recursive: true });
-        }
-        fs.writeFileSync(dstPath, content, 'utf-8');
-      }
+    fs.readdirSync(src, { withFileTypes: true }).forEach(entry => {
+      const s = path.join(src, entry.name), d = path.join(dst, entry.name);
+      if (entry.isDirectory()) safeCopyDirectory(s, d);
+      else { fs.mkdirSync(path.dirname(d), { recursive: true }); fs.writeFileSync(d, fs.readFileSync(s, 'utf-8'), 'utf-8'); }
     });
     return true;
-  } catch (err) {
-    return false;
-  }
+  } catch (e) { return false; }
 }
 
 function install() {
-  if (!isInsideNodeModules()) {
-    return;
-  }
-
+  if (!isInsideNodeModules()) return;
   const projectRoot = getProjectRoot();
-  if (!projectRoot) {
-    return;
-  }
-
+  if (!projectRoot) return;
   const geminiDir = path.join(projectRoot, '.gemini', 'extensions', 'gm-gc');
   const sourceDir = __dirname;
-
   safeCopyDirectory(path.join(sourceDir, 'agents'), path.join(geminiDir, 'agents'));
   safeCopyDirectory(path.join(sourceDir, 'hooks'), path.join(geminiDir, 'hooks'));
 }
