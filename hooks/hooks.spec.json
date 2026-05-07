@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "description": "Hook spec for gm Gemini CLI extension",
+  "envVar": "extensionPath",
+  "events": [
+    {
+      "eventKey": "BeforeTool",
+      "commands": [
+        {
+          "kind": "js",
+          "file": "pre-tool-use-hook.js",
+          "timeout": 3600
+        }
+      ]
+    },
+    {
+      "eventKey": "SessionStart",
+      "commands": [
+        {
+          "kind": "js",
+          "file": "session-start-hook.js",
+          "timeout": 180000
+        }
+      ]
+    },
+    {
+      "eventKey": "BeforeAgent",
+      "commands": [
+        {
+          "kind": "js",
+          "file": "prompt-submit-hook.js",
+          "timeout": 60000
+        }
+      ]
+    },
+    {
+      "eventKey": "SessionEnd",
+      "commands": [
+        {
+          "kind": "js",
+          "file": "stop-hook.js",
+          "timeout": 300000
+        },
+        {
+          "kind": "js",
+          "file": "stop-hook-git.js",
+          "timeout": 60000
+        }
+      ]
+    }
+  ]
+}
